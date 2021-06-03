@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Booze & Juice</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    .w3-sidebar a {
+      font-family: "Roboto", sans-serif
+    }
+
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .w3-wide {
+      font-family: "Montserrat", sans-serif;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      background-image: url(images/stefano-ghezzi-wKlvN9z3PCI-unsplash.jpg);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    .content {
+      flex: 1 0 auto;
+    }
+
+    .footer {
+      flex-shrink: 0;
+      width: 100%;
+      background-color: black;
+      color: white;
+      text-align: center;
+      padding: 25px;
+      left: 0px;
+    }
+  </style>
+  <!-- IRMA integration -->
+  <script type="text/javascript" src="assets/irma.js"></script>
+  <script type="text/javascript">
+    let options = {
+      // Developer options
+      // debugging: true,
+  
+      // Front-end language
+      language: 'en',
+  
+      // Back-end options
+      session: {
+        // Point this to your server:
+        url: 'http://192.168.1.108:8080',
+  
+        // Define your disclosure request:
+        start: {
+          method: 'GET',
+          url: o => `${o.url}/startAuth`,
+        },
+  
+        // Define how request results should be mapped to a session pointer to display
+        mapping: {
+          // The only thing included in the request is the session pointer, so disable additional parsing.
+          sessionPtr: r => r,
+        },
+  
+        // Results are handled on backend, so not needed here
+        result: false,
+      }
+    };
+  
+    window.onload = function() {
+      document.getElementById('start-popup').onclick = () => {
+        const irmaPopup = irma.newPopup(options);
+        irmaPopup.start()
+          .then(result => {
+            // Reload page now we are authenticated
+            location.reload();
+          })
+          .catch(error => {
+            if (error === 'Aborted') {
+              // Abort just signals that the user made a choice to abort
+              // so don't log it as an error
+              return;
+            }
+            console.error("Failure during irma session: ", error);
+          });
+      };
+    }
+  </script>
+</head>
+
+<body>
+  <!-- Age request -->
+  <div class="content w3-container w3-padding-32"
+    style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="w3-black" style=" max-width: 460px; padding: 30px;">
+      <h1>Booze & Juice</h1>
+      <p>To enter the Booze & Juice shop, you need to show that you are at least 18 years old with the IRMA-app.</p>
+      <button id="start-popup" type="button" class="w3-button w3-red w3-padding-large w3-margin-bottom w3-margin-right">Proceed with
+        IRMA</button>
+      <button type="button" class="w3-button w3-white w3-padding-large w3-margin-bottom">More about IRMA</button>
+    </div>
+    <div id="age-notification"
+      style="max-width: 460px; padding: 30px; background-color: #DFE6EE; font-size: 18px; display: none;">
+      <table>
+        <tr>
+          <td>
+            <div style="padding-right: 20px;"><i class="material-icons">error</i></div>
+          </td>
+          <td>Unfortunately, you seem to be <b>too young</b> to visit this site. You need to be 18+ to visit Booze & Juice.
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="footer">This is not a real website. This is an IRMA-demo. Powered by <a href="https://irma.app"
+      title="IRMA-app" target="_blank" class="w3-hover-opacity">IRMA.</a>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,11 @@
+{
+   "url": "http://192.168.1.108:8080",
+   "no_tls": true,
+   "no_auth": false,
+   "requestors": {
+       "AccessController": {
+           "auth_method": "token",
+           "key": "token_value"
+       }
+   }
+}
